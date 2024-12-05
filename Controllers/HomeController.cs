@@ -20,8 +20,7 @@ namespace CRUD_Estudiantes.Controllers
         // Acción para la vista principal, muestra todos los estudiantes
         public async Task<IActionResult> Index(string query)
         {
-            var estudiantes = from e in _context.Estudiantes
-                              select e;
+            var estudiantes = _context.Estudiantes.AsQueryable();
 
             // Si hay una consulta de búsqueda, filtra por nombre
             if (!string.IsNullOrEmpty(query))
@@ -33,73 +32,65 @@ namespace CRUD_Estudiantes.Controllers
             return View(await estudiantes.ToListAsync());
         }
 
-        public IActionResult Registro() => View();
-
-        // Acción para registrar un nuevo estudiante
-        [HttpPost]
-        public async Task<IActionResult> Register(Estudiante estudiante)
+        // Acción para mostrar el formulario de registro o edición
+        public async Task<IActionResult> CreateOrEdit(int? id)
         {
-            if (ModelState.IsValid)
+            if (id == null) // Registro
             {
-                estudiante.Fecha = DateTime.UtcNow;
-                _context.Add(estudiante);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return View(new Estudiante());
             }
-            return View(estudiante);
-        }
 
-        // Acción para mostrar el formulario de edición
-        public async Task<IActionResult> Edit(int id)
-        {
+            // Edición: Cargar datos existentes
             var estudiante = await _context.Estudiantes.FindAsync(id);
             if (estudiante == null)
             {
-                return NotFound();
+                return NotFound("No se encontró el estudiante especificado.");
             }
+
             return View(estudiante);
         }
 
-        // Acción para guardar los cambios del estudiante editado
         [HttpPost]
-        public async Task<IActionResult> Edit(int id, Estudiante estudiante)
+        public async Task<IActionResult> Save(Estudiante estudiante)
         {
-            if (id != estudiante.Id)
-            {
-                return BadRequest();
-            }
-
             if (ModelState.IsValid)
             {
-                try
+                if (estudiante.Id == 0) // Nuevo registro
                 {
-                    _context.Update(estudiante);
-                    await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Index));
+                    estudiante.Fecha = DateTime.UtcNow; // Fecha actual
+                    _context.Add(estudiante);
                 }
-                catch (DbUpdateConcurrencyException)
+                else // Edición
                 {
-                    if (!_context.Estudiantes.Any(e => e.Id == id))
+                    var existingEstudiante = await _context.Estudiantes.FindAsync(estudiante.Id);
+                    if (existingEstudiante == null)
                     {
                         return NotFound();
                     }
-                    else
-                    {
-                        throw;
-                    }
+
+                    // Actualizar solo los campos editables
+                    existingEstudiante.Nombre = estudiante.Nombre;
+                    existingEstudiante.Edad = estudiante.Edad;
+
+                    // Mantener la fecha original (o actualizarla si lo deseas)
+                    // existingEstudiante.Fecha = DateTime.UtcNow;
                 }
+
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
             }
+
             return View(estudiante);
         }
 
 
-        // Acción para confirmar la eliminación del estudiante
+        // Acción para eliminar un estudiante
         public async Task<IActionResult> Delete(int id)
         {
             var estudiante = await _context.Estudiantes.FindAsync(id);
             if (estudiante == null)
             {
-                return NotFound();
+                return NotFound("No se encontró el estudiante especificado para eliminar.");
             }
 
             _context.Estudiantes.Remove(estudiante);
@@ -107,13 +98,19 @@ namespace CRUD_Estudiantes.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        // Acción para verificar la existencia de un estudiante
+        private async Task<bool> EstudianteExists(int id)
+        {
+            return await _context.Estudiantes.AnyAsync(e => e.Id == id);
+        }
 
+        // Página de privacidad
         public IActionResult Privacy()
         {
             return View();
         }
 
-        // Acción de error para mostrar detalles del error
+        // Acción de error
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

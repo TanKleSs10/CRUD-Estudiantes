@@ -7,7 +7,7 @@
 <div class="d-flex flex-column justify-content-center w-100 h-100 px-5">
     <h1 class="text-light text-dark">Panel de Control</h1>
     <div class="row">
-        <a asp-controller="Home" asp-action="Registro" class="btn btn-outline-success col-2">Registrar Estudiante</a>
+        <a asp-action="CreateOrEdit" class="btn btn-outline-success col-2">Registrar Estudiante</a>
         <!-- Barra de búsqueda -->
         <form class="form-inline d-flex col-8 gap-2">
             <input type="text" class="form-control col-6" name="query" placeholder="Buscar estudiante...">
@@ -30,7 +30,7 @@
                         <td>@estudiante.Edad</td>
                         <td>@estudiante.Fecha.ToString("dd/MMMM/yyyy")</td>
                         <td>
-                            <a href="/Home/Registro/@estudiante.Id" class="btn btn-primary btn-sm">Actualizar</a>
+                            <a asp-action="CreateOrEdit" asp-route-id="@estudiante.Id" class="btn btn-primary">Editar</a>
                             <a href="/Home/Delete/@estudiante.Id" class="btn btn-danger btn-sm">Eliminar</a>
                         </td>
                     </tr>

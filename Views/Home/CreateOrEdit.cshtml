@@ -1,15 +1,17 @@
 ﻿@model CRUD_Estudiantes.Models.Estudiante
+
 @{
-    ViewData["Title"] = Model != null && Model.Id > 0 ? "Editar Estudiante" : "Registrar Estudiante";
-    var action = Model != null && Model.Id > 0 ? "Edit" : "Register";
+    // Determina si es registro o edición basado en el Id
+    var isEdit = Model?.Id > 0;
+    ViewData["Title"] = isEdit ? "Editar Estudiante" : "Registrar Estudiante";
 }
 
-<a class="btn btn-outline-success col-2" asp-controller="Home" asp-action="index">Regresar al Panel</a>
+<a class="btn btn-outline-success col-2" asp-controller="Home" asp-action="Index">Regresar al Panel</a>
 <div class="container w-100 mt-5 d-flex flex-column">
     <h2 class="text-center">@ViewData["Title"]</h2>
-    <form asp-action="@action" method="post" class="d-flex mx-auto flex-column gap-3 w-50">
+    <form asp-action="Save" method="post" class="d-flex mx-auto flex-column gap-3 w-50">
         <!-- Campo oculto para incluir el Id en caso de edición -->
-        @if (Model.Id > 0 && Model.Id != null)
+        @if (isEdit)
         {
             <input type="hidden" asp-for="Id" />
         }
@@ -23,8 +25,9 @@
             <input asp-for="Edad" type="number" class="form-control" id="edad" required>
             <span asp-validation-for="Edad" class="text-danger"></span>
         </div>
+
         <button type="submit" class="btn btn-primary">
-            @(Model.Id > 0 ? "Actualizar" : "Registrar")
+            @(isEdit ? "Guardar Cambios" : "Registrar")
         </button>
     </form>
 </div>
