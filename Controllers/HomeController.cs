@@ -29,7 +29,8 @@ namespace CRUD_Estudiantes.Controllers
             }
 
             // Ordenar por ID
-            estudiantes = estudiantes.OrderBy(estudiante => estudiante.Id);
+            estudiantes =  estudiantes.OrderBy(estudiante => estudiante.Id);
+
 
             // Obtén los estudiantes filtrados y pásalos a la vista
             return View(await estudiantes.ToListAsync());

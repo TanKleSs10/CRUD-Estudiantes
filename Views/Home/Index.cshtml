@@ -4,29 +4,52 @@
 @{
     ViewData["Title"] = "Home Page";
 }
-<div class="d-flex flex-column justify-content-center w-100 h-100 px-5">
-    <h1 class="text-light text-dark">Panel de Control</h1>
-    <div class="row">
-        <a asp-action="CreateOrEdit" class="btn btn-outline-success col-2">Registrar Estudiante</a>
-        <!-- Barra de búsqueda -->
-        <form class="form-inline d-flex col-8 gap-2">
-            <input type="text" class="form-control col-6" name="query" placeholder="Buscar estudiante...">
-            <button type="submit" class="btn btn-primary col-4">Buscar</button>
-        </form>
+<div class="row mt-4">
+    <!-- Botón para registrar estudiante -->
+    <div class="col-12 mb-3">
+        <a asp-action="CreateOrEdit" class="btn btn-outline-success">Registrar Estudiante</a>
     </div>
+
+    <!-- Barra de búsqueda -->
+    <form method="get" class="col-12 d-flex gap-2 mb-3">
+        <input type="text" class="form-control flex-grow-1" name="query" placeholder="Buscar estudiante...">
+        <button type="submit" class="btn btn-primary">Buscar</button>
+    </form>
+
+    <!-- Filtros y ordenamiento -->
+    <form method="get" class="col-8 d-flex gap-2 mx-auto">
+        <select class="form-select flex-grow-1" name="sortField">
+            <option value="Nombre">Nombre</option>
+            <option value="Edad">Edad</option>
+            <option value="Fecha">Fecha de Ingreso</option>
+        </select>
+
+        <select class="form-select flex-grow-1" name="sortOrder">
+            <option value="asc">Ascendente</option>
+            <option value="desc">Descendente</option>
+        </select>
+
+        <button type="submit" class="btn btn-secondary">Ordenar</button>
+    </form>
 </div>
 
 <div class="mt-4">
     <table class="table table-striped" id="search-results">
-        <thead> <tr> <th>Nombre</th> <th>Edad</th> <th>Fecha de Ingreso</th><th>Acción</th> </tr> </thead>
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Edad</th>
+                <th>Fecha de Ingreso</th>
+                <th>Acción</th>
+            </tr>
+        </thead>
         <tbody>
-            <!-- Aquí se mostrarán los resultados --> 
             @if (Model != null && Model.Any())
             {
                 foreach (var estudiante in Model)
                 {
-                    <tr> 
-                        <td>@estudiante.Nombre</td> 
+                    <tr>
+                        <td>@estudiante.Nombre</td>
                         <td>@estudiante.Edad</td>
                         <td>@estudiante.Fecha.ToString("dd/MMMM/yyyy")</td>
                         <td>
@@ -38,7 +61,9 @@
             }
             else
             {
-                <tr> <td colspan="3">No se encontraron resultados.</td> </tr>
+                <tr>
+                    <td colspan="4">No se encontraron resultados.</td>
+                </tr>
             }
         </tbody>
     </table>
