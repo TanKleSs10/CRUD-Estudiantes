@@ -18,22 +18,31 @@ namespace CRUD_Estudiantes.Controllers
         }
 
         // Acción para la vista principal, muestra todos los estudiantes
-        public async Task<IActionResult> Index(string query)
+        public IActionResult Index(string query, string sortField, string sortOrder)
         {
+            // Obtener todos los estudiantes
             var estudiantes = _context.Estudiantes.AsQueryable();
 
-            // Si hay una consulta de búsqueda, filtra por nombre
+            // Filtrado por búsqueda
             if (!string.IsNullOrEmpty(query))
             {
-                estudiantes = estudiantes.Where(estudiante => estudiante.Nombre.Contains(query));
+                estudiantes = estudiantes.Where(e => e.Nombre.Contains(query));
             }
 
-            // Ordenar por ID
-            estudiantes =  estudiantes.OrderBy(estudiante => estudiante.Id);
+            // Ordenamiento dinámico basado en los parámetros seleccionados
+            if (!string.IsNullOrEmpty(sortField))
+            {
+                estudiantes = sortField switch
+                {
+                    "Nombre" => sortOrder == "asc" ? estudiantes.OrderBy(e => e.Nombre) : estudiantes.OrderByDescending(e => e.Nombre),
+                    "Edad" => sortOrder == "asc" ? estudiantes.OrderBy(e => e.Edad) : estudiantes.OrderByDescending(e => e.Edad),
+                    "Fecha" => sortOrder == "asc" ? estudiantes.OrderBy(e => e.Fecha) : estudiantes.OrderByDescending(e => e.Fecha),
+                    _ => estudiantes.OrderBy(e => e.Nombre) // Valor predeterminado de ordenamiento
+                };
+            }
 
-
-            // Obtén los estudiantes filtrados y pásalos a la vista
-            return View(await estudiantes.ToListAsync());
+            // Pasar los estudiantes filtrados y ordenados a la vista
+            return View(estudiantes.ToList());
         }
 
         // Acción para mostrar el formulario de registro o edición
