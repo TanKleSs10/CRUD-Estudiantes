@@ -25,8 +25,11 @@ namespace CRUD_Estudiantes.Controllers
             // Si hay una consulta de búsqueda, filtra por nombre
             if (!string.IsNullOrEmpty(query))
             {
-                estudiantes = estudiantes.Where(e => e.Nombre.Contains(query));
+                estudiantes = estudiantes.Where(estudiante => estudiante.Nombre.Contains(query));
             }
+
+            // Ordenar por ID
+            estudiantes = estudiantes.OrderBy(estudiante => estudiante.Id);
 
             // Obtén los estudiantes filtrados y pásalos a la vista
             return View(await estudiantes.ToListAsync());
@@ -82,7 +85,6 @@ namespace CRUD_Estudiantes.Controllers
 
             return View(estudiante);
         }
-
 
         // Acción para eliminar un estudiante
         public async Task<IActionResult> Delete(int id)
