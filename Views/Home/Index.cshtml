@@ -1,70 +1,7 @@
-﻿@model List<Estudiante>
-
-
+﻿
 @{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "index";
 }
-<div class="row mt-4">
-    <!-- Botón para registrar estudiante -->
-    <div class="col-12 mb-3">
-        <a asp-action="CreateOrEdit" class="btn btn-outline-success">Registrar Estudiante</a>
-    </div>
 
-    <!-- Barra de búsqueda -->
-    <form method="get" class="col-12 d-flex gap-2 mb-3">
-        <input type="text" class="form-control flex-grow-1" name="query" placeholder="Buscar estudiante...">
-        <button type="submit" class="btn btn-primary">Buscar</button>
-    </form>
+<h1>index</h1>
 
-    <!-- Filtros y ordenamiento -->
-    <form method="get" class="col-12 d-flex gap-2">
-        <select class="form-select flex-grow-1" name="sortField">
-            <option value="Nombre">Nombre</option>
-            <option value="Edad">Edad</option>
-            <option value="Fecha">Fecha de Ingreso</option>
-        </select>
-
-        <select class="form-select flex-grow-1" name="sortOrder">
-            <option value="asc">Ascendente</option>
-            <option value="desc">Descendente</option>
-        </select>
-
-        <button type="submit" class="btn btn-secondary">Ordenar</button>
-    </form>
-</div>
-
-<div class="mt-4">
-    <table class="table table-striped" id="search-results">
-        <thead>
-            <tr>
-                <th>Nombre</th>
-                <th>Edad</th>
-                <th>Fecha de Ingreso</th>
-                <th>Acción</th>
-            </tr>
-        </thead>
-        <tbody>
-            @if (Model != null && Model.Any())
-            {
-                foreach (var estudiante in Model)
-                {
-                    <tr>
-                        <td>@estudiante.Nombre</td>
-                        <td>@estudiante.Edad</td>
-                        <td>@estudiante.Fecha.ToString("dd/MMMM/yyyy")</td>
-                        <td>
-                            <a asp-action="CreateOrEdit" asp-route-id="@estudiante.Id" class="btn btn-primary">Editar</a>
-                            <a href="/Home/Delete/@estudiante.Id" class="btn btn-danger btn-sm">Eliminar</a>
-                        </td>
-                    </tr>
-                }
-            }
-            else
-            {
-                <tr>
-                    <td colspan="4">No se encontraron resultados.</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-</div>

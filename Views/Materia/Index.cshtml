@@ -1,0 +1,70 @@
+﻿@model List<Materia>
+
+@{
+    ViewData["Title"] = "Materias";
+}
+
+<div class="row mt-4">
+    <!-- Botón para registrar materia -->
+    <div class="col-12 mb-3">
+        <a asp-action="CreateOrEdit" class="btn btn-outline-success">Registrar Materia</a>
+    </div>
+
+    <!-- Barra de búsqueda -->
+    <form method="get" class="col-12 d-flex gap-2 mb-3">
+        <input type="text" class="form-control flex-grow-1" name="query" placeholder="Buscar materia...">
+        <button type="submit" class="btn btn-primary">Buscar</button>
+    </form>
+
+    <!-- Filtros y ordenamiento -->
+    <form method="get" class="col-12 d-flex gap-2">
+        <select class="form-select flex-grow-1" name="sortField">
+            <option value="Nombre">Nombre</option>
+            <option value="HorarioInicio">Horario de Inicio</option>
+            <option value="HorarioFin">Horario de Fin</option>
+        </select>
+
+        <select class="form-select flex-grow-1" name="sortOrder">
+            <option value="asc">Ascendente</option>
+            <option value="desc">Descendente</option>
+        </select>
+
+        <button type="submit" class="btn btn-secondary">Ordenar</button>
+    </form>
+</div>
+
+<div class="mt-4">
+    <table class="table table-striped" id="search-results">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Horario</th>
+                <th>Días de la Semana</th>
+                <th>Acción</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Any())
+            {
+                foreach (var materia in Model)
+                {
+                    <tr>
+                        <td>@materia.Nombre</td>
+                        <td>@materia.HorarioInicio.ToString(@"hh\:mm") - @materia.HorarioFin.ToString(@"hh\:mm")</td>
+                        <td>@materia.DiasSemana</td>
+                        <td>
+                            <a asp-action="CreateOrEdit" asp-route-id="@materia.ClaseId" class="btn btn-primary">Editar</a>
+                            <a href="/Home/Delete/@materia.ClaseId" class="btn btn-danger btn-sm">Eliminar</a>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="4">No se encontraron resultados.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

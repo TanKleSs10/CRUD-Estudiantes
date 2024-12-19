@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Data;
+using static CRUD_Estudiantes.Models.Materia;
 
 namespace CRUD_Estudiantes.Models
 {
@@ -14,5 +15,9 @@ namespace CRUD_Estudiantes.Models
         public int Edad { get; set; }
 
         public DateTime Fecha { get; set; }
+
+        // Relación con Clases (muchos a muchos)
+        public ICollection<EstudianteMateria> EstudianteMateria { get; set; }
+
     }
 }
